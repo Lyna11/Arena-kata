@@ -1,13 +1,18 @@
 {
   "compilerOptions": {
+    "types": [
+      "jest"
+    ],
     "module": "commonjs",
-    "target": "es5",
+    "target": "es2016",
     "strict": true,
     "noImplicitAny": true,
     "sourceMap": true,
     "baseUrl": "./"
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*"
+  ],
   "exclude": [
     "node_modules"
   ]
