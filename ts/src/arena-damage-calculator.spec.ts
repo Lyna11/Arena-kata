@@ -10,7 +10,7 @@ describe("ArenaDamageCalculator", () => {
     calculator = new ArenaDamageCalculator();
   });
 
-  it("A water attacker should deal demage to a fire defender ", () => {
+  it("A water attacker with no buffs should deal 118 damage to a fire defender who has 75 in def ", () => {
     /*attaque = pow, defense = def, critique = crtr, leth = leth et vies = lp*/
     const attacker = new Hero(HeroElement.Water, 100, 75, 0, 0, 200);
     const defenders = [
@@ -22,7 +22,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[0].lp).toBe(82);
   });
-  it("A fire attacker should deal demage to a earth defender ", () => {
+  it("A fire attacker with no buffs should deal 118 damage to a earth defender ", () => {
     const attacker = new Hero(HeroElement.Fire, 100, 75, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Fire, 100, 75, 0, 0, 200),
@@ -33,7 +33,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[2].lp).toBe(82);
   });
-  it("should decrease damage when defender has Defense buff", () => {
+  it("An Earth attacker with no buffs should attack water and deal 88 damage when defender has Defense buff and has 75 in def", () => {
     const attacker = new Hero(HeroElement.Earth, 100, 75, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Fire, 100, 75, 0, 0, 200),
@@ -45,7 +45,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[1].lp).toBe(112);
   });
-  it("a water attacker should deal demage to a water defender", () => {
+  it("a water attacker with no buffs should deal 99 damage to a water defender who has 75 in def when no fire defender", () => {
     const attacker = new Hero(HeroElement.Water, 100, 75, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Earth, 100, 75, 0, 0, 200),
@@ -56,7 +56,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[1].lp).toBe(101);
   });
-  it("should increase damage when attacker has attcker buff", () => {
+  it("a fire attacker with attack buff should deal 123 damage to a fire defender who has 75 in def who has no buffs when no earth defender", () => {
     const attacker = new Hero(HeroElement.Fire, 100, 75, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Fire, 100, 75, 0, 0, 200),
@@ -68,7 +68,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[0].lp).toBe(77);
   });
-  it("a earth attacker should deal demage to a earth defender", () => {
+  it("a earth attacker with no buffs should deal 188 damage to a earth defender who has 0 in def, 100 in crit and 50 in leth", () => {
     const attacker = new Hero(HeroElement.Earth, 100, 0, 50, 100, 200);
     const defenders = [
       new Hero(HeroElement.Earth, 100, 0, 0, 50, 200),
@@ -80,7 +80,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[0].lp).toBe(12);
   });
-  it("a fire attker should deal demage to a water defender", () => {
+  it("a fire attacker with no buffs should deal 80 damage to a water defender even if its weakness if others defenders has 0 lp", () => {
     const attacker = new Hero(HeroElement.Fire, 100, 0, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Water, 100, 0, 0, 0, 200),
@@ -91,7 +91,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[0].lp).toBe(120);
   });
-  it("a water attker should deal demage to a earth defender", () => {
+  it("a water attacker with no buffs should deal 80 damage to a earth defender even if its weakness if others defenders has 0 lp", () => {
     const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Water, 100, 0, 0, 0, 0),
@@ -102,7 +102,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[2].lp).toBe(120);
   });
-  it("a earth attker should deal demage to a fire defender", () => {
+  it("a earth attacker with no buffs should deal 80 damage to a fire defender even if its weakness if others defenders has 0 lp", () => {
     const attacker = new Hero(HeroElement.Earth, 100, 0, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Water, 100, 0, 0, 0, 0),
@@ -113,11 +113,23 @@ describe("ArenaDamageCalculator", () => {
     expect(result).toBeDefined();
     expect(result[1].lp).toBe(120);
   });
-  it("a earth attker should deal demage to a fire defender", () => {
+  it("a earth attacker with no buffs should deal 1 damage to a fire defender beacause it's the only one who was his lp > 0 and lp can't be < 0", () => {
     const attacker = new Hero(HeroElement.Earth, 100, 0, 0, 0, 200);
     const defenders = [
       new Hero(HeroElement.Water, 100, 0, 0, 0, 0),
       new Hero(HeroElement.Fire, 100, 0, 0, 0, 1),
+      new Hero(HeroElement.Earth, 100, 0, 0, 0, 0),
+    ];
+    const result = calculator.computeDamage(attacker, defenders);
+    expect(result).toBeDefined();
+    expect(result[1].lp).toBe(0);
+  });
+
+  it("a earth should attack no one when all the defenders has 0 lp", () => {
+    const attacker = new Hero(HeroElement.Earth, 100, 0, 0, 0, 200);
+    const defenders = [
+      new Hero(HeroElement.Water, 100, 0, 0, 0, 0),
+      new Hero(HeroElement.Fire, 100, 0, 0, 0, 0),
       new Hero(HeroElement.Earth, 100, 0, 0, 0, 0),
     ];
     const result = calculator.computeDamage(attacker, defenders);
