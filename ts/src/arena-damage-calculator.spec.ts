@@ -73,7 +73,7 @@ describe("ArenaDamageCalculator", () => {
     expect(result[1].lp).toBe(200);
     expect(result[2].lp).toBe(200);
   });
-  it("a earth attacker with no buffs should deal 188 damage to a earth defender who has 0 in def, 100 in crit and 50 in leth", () => {
+  it("a earth attacker with attack buff should deal 188 damage to a earth defender who has 0 in def, 100 in crit and 50 in leth", () => {
     const attacker = new Hero(HeroElement.Earth, 100, 0, 50, 100, 200);
     const defenders = [
       new Hero(HeroElement.Earth, 100, 0, 0, 50, 200),
@@ -147,5 +147,51 @@ describe("ArenaDamageCalculator", () => {
     expect(result[1].lp).toBe(0);
     expect(result[2].lp).toBe(0);
   });
-  // Add more test cases to cover other scenarios and edge cases
+  it("a earth attacker with holy buff should deal 78 damage  TO a fire defender who has 150 in def", () => {
+    const attacker = new Hero(HeroElement.Earth, 100, 150, 0, 0, 200);
+    const defenders = [new Hero(HeroElement.Fire, 100, 150, 0, 0, 200)];
+    attacker.buffs.push(Buff.Holy);
+    const result = calculator.computeDamage(attacker, defenders);
+    expect(result[0].lp).toBe(122);
+  });
+  it("a earth attacker should deal damage  TO a fire defender with a holy buff who has 0 in def ", () => {
+    const attacker = new Hero(HeroElement.Earth, 100, 0, 0, 0, 200);
+    const defenders = [new Hero(HeroElement.Fire, 100, 0, 0, 0, 200)];
+    defenders[0].buffs.push(Buff.Holy);
+    const result = calculator.computeDamage(attacker, defenders);
+    expect(result[0].lp).toBe(100);
+  });
+  it("should apply turncoat to fire hero and remove it because there is more than one turn in this turn", () => {
+    const attacker = new Hero(HeroElement.Fire, 100, 0, 0, 0, 200);
+    const defenders = [new Hero(HeroElement.Fire, 100, 0, 0, 0, 400)];
+    attacker.buffs.push(Buff.Turncoat);
+
+    calculator.computeDamage(attacker, defenders);
+    expect(attacker.element).toBe(HeroElement.Water);
+
+    calculator.computeDamage(attacker, defenders);
+    expect(attacker.element).toBe(HeroElement.Fire);
+  });
+  it("should apply turncoat to water hero and remove it because there is more than one turn in this turn", () => {
+    const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 200);
+    const defenders = [new Hero(HeroElement.Fire, 100, 0, 0, 0, 400)];
+    attacker.buffs.push(Buff.Turncoat);
+
+    calculator.computeDamage(attacker, defenders);
+    expect(attacker.element).toBe(HeroElement.Earth);
+
+    calculator.computeDamage(attacker, defenders);
+    expect(attacker.element).toBe(HeroElement.Water);
+  });
+  it("should apply turncoat to earth hero and remove it because there is more than one turn in this turn", () => {
+    const attacker = new Hero(HeroElement.Earth, 100, 0, 0, 0, 200);
+    const defenders = [new Hero(HeroElement.Fire, 100, 0, 0, 0, 400)];
+    attacker.buffs.push(Buff.Turncoat);
+
+    calculator.computeDamage(attacker, defenders);
+    expect(attacker.element).toBe(HeroElement.Fire);
+
+    calculator.computeDamage(attacker, defenders);
+    expect(attacker.element).toBe(HeroElement.Earth);
+  });
 });
