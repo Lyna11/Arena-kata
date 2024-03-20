@@ -59,9 +59,7 @@ export class ArenaDamageCalculator {
       (eq.length && eq[Math.floor(Math.random() * eq.length)]) ||
       dis[Math.floor(Math.random() * dis.length)];
 
-    console.log("Taux de coup critique (crtr):", attacker.crtr);
     const c = Math.random() * 100 < attacker.crtr;
-    console.log(Math.random() * 100);
     let dmg = 0;
     if (c) {
       dmg =
@@ -92,6 +90,7 @@ export class ArenaDamageCalculator {
     if (dmg > 0) {
       if (adv.find((h) => h === attacked)) {
         dmg = dmg + (dmg * 20) / 100;
+        // eslint-disable-next-line no-empty
       } else if (eq.find((h) => h === attacked)) {
       } else {
         dmg = dmg - (dmg * 20) / 100;
